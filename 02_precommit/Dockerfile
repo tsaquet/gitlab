@@ -26,7 +26,10 @@ RUN detect-secrets scan > .secrets.baseline
 # 3.2: Test on existing files (ie no files)
 RUN pre-commit run --all-files
 
-# 3.2: Add a file with a lot of secrets inside
+# 3.2.1: Add a good file
+RUN echo "I'm good code" > goodcode.py && git add goodcode.py && git commit -m "Good code"
+
+# 3.2.2: Add a file with a lot of secrets inside
 COPY sample.py sample.py
 RUN git add sample.py 
 RUN git commit -m "Ooops"

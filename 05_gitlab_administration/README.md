@@ -17,4 +17,5 @@
 
 - Ajouter un message général pour avertir d’un maintenance
 
-![This is an image](../files/01.png)
+![This is an image](./files/01.png)
+

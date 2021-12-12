@@ -1,0 +1,50 @@
+---
+version: '3.5'
+
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    container_name: gitlab
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com'
+        registry_external_url 'http://registry.example.com'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '22:22'
+    volumes:
+      - '${GITLAB_HOME}/config:/etc/gitlab'
+      - '${GITLAB_HOME}/logs:/var/log/gitlab'
+      - '${GITLAB_HOME}/data:/var/opt/gitlab'
+    networks:
+      - gitlab
+
+  gitlab-runner-shell:
+    image: gitlab/gitlab-runner:alpine
+    restart: unless-stopped
+    container_name: shell-runner
+    depends_on:
+      - gitlab
+    volumes:
+      - '${GITLAB_HOME}/config/gitlab-runner-shell:/etc/gitlab-runner'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    networks:
+      - gitlab
+
+  gitlab-runner-docker:
+    image: gitlab/gitlab-runner:alpine
+    restart: unless-stopped
+    container_name: docker-runner
+    depends_on:
+      - gitlab
+    volumes:
+      - '${GITLAB_HOME}/config/gitlab-runner-docker:/etc/gitlab-runner'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    networks:
+      - gitlab
+    
+networks:
+  gitlab:

@@ -1,0 +1,12 @@
+---
+job-i:
+  tags:
+    - cli
+  script:
+    - echo "Djob i!"
+
+job-a: 
+  tags:
+    - cli
+  script:
+    - echo "Djob a!"

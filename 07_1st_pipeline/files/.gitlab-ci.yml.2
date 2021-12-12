@@ -1,0 +1,27 @@
+---
+stages:
+  - djob
+  - after-djob
+
+job-i:
+  stage: djob
+  tags:
+    - cli
+  script:
+    - echo "Djob i!"
+
+job-a:
+  stage: djob
+  tags:
+    - cli
+  script:
+    - echo "Djob a!"
+
+job-final:
+  stage: after-djob
+  tags:
+    - conteneur
+  script:
+    - echo "Mon job final!"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'

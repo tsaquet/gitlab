@@ -16,8 +16,8 @@ echo “Mon second job !” dans un second job
 
 - Installer un runner utilisant l’executor “shell” & donner un tag "cli" au runner
 
-https://docs.gitlab.com/runner/install/index.html
-https://docs.gitlab.com/runner/register/
+https://docs.gitlab.com/runner/install/index.html  
+https://docs.gitlab.com/runner/register/  
 
 ![Runner registration token](./files/01.png)
 

@@ -1,16 +1,16 @@
-# Ma première pipeline
-
+# Mon premier pipeline
 ## To Do
 
 - Installer un runner utilisant l’executor “shell” 
 - Donner un tag “cli” au runner 
-- Créer un .gitlab-ci.yml qui va juste faire un : 
-echo “Mon premier job !” dans un premier job 
-echo “Mon second job !” dans un second job 
+- Créer un .gitlab-ci.yml qui va juste faire un :  
+echo “Mon premier job !” dans un premier job  
+echo “Mon second job !” dans un second job  
 - Créer un second runner utilisant l’executor “Docker” 
 - Lui donner le tag “conteneur” 
-- Ajouter dans le .gitlab-ci.yml ○ Un troisième job qui est dépendant des deux premiers et qui s'exécute uniquement sur Master 
-○ echo “Mon job final !”
+- Ajouter dans le .gitlab-ci.yml  
+Un troisième job qui est dépendant des deux premiers et qui s'exécute uniquement sur Master  
+echo “Mon job final !”
 
 ## Solution
 

@@ -35,7 +35,7 @@ services:
       - gitlab
 
   gitlab-runner-docker:
-    image: gitlab/gitlab-runner:alpine
+    image: gitlab/gitlab-runner:ubuntu
     restart: unless-stopped
     container_name: docker-runner
     depends_on:

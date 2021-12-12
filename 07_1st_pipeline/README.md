@@ -122,3 +122,40 @@ Enter the default Docker image (for example, ruby:2.6):
 alpine
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
 ```
+
+The job fails! Why?
+
+```bash
+Fetching changes with git depth set to 50...
+Reinitialized existing Git repository in /builds/root/tp_gitlab/.git/
+fatal: unable to access 'http://gitlab.example.com/root/tp_gitlab.git/': Could not resolve host: gitlab.example.com
+ERROR: Job failed: exit code 1
+```
+
+https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdocker-section
+
+```bash
+$ docker network ls
+NETWORK ID     NAME            DRIVER    SCOPE
+f4d7bbd37566   bridge          bridge    local
+56a84e4069ae   files_gitlab    bridge    local
+0a464c916d24   host            host      local
+ea2531c33de9   none            null      local
+...
+
+$ docker exec -it docker-runner bash
+root@23fbc2cdd8f0:/# vim /etc/gitlab-runner/config.toml 
+...
+  [runners.docker]
+    tls_verify = false
+    image = "alpine"
+    privileged = false
+    disable_entrypoint_overwrite = false
+    oom_kill_disable = false
+    disable_cache = false
+    volumes = ["/cache"]
+    shm_size = 0
+    network_mode = "files_gitlab"
+
+# Relaunch the job
+```

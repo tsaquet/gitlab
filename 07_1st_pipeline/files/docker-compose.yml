@@ -23,7 +23,7 @@ services:
       - gitlab
 
   gitlab-runner-shell:
-    image: gitlab/gitlab-runner:alpine
+    image: gitlab/gitlab-runner:ubuntu
     restart: unless-stopped
     container_name: shell-runner
     depends_on:

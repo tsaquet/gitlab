@@ -13,6 +13,13 @@ echo “Mon second job !” dans un second job
 Un troisième job qui est dépendant des deux premiers et qui s'exécute uniquement sur Master  
 echo “Mon job final !”
 
+The image can take a long long time to pull.  
+If so, ask your teacher the .tar.gz of the docker image on USB stick. 
+
+Reminders:
+docker load < gitlab-runner-alpine_image.tar.gz
+docker load < gitlab-runner-ubuntu_image.tar.gz
+
 ## Solution
 
 - Installer un runner utilisant l’executor “shell” & donner un tag "cli" au runner

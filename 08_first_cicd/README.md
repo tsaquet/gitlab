@@ -5,9 +5,9 @@
 - Créer un nouveau projet appelé tp_8 dans votre instance gitlab locale
 - Créer un conteneur Docker nginx qui affiche une page index contenant le message de votre choix
 - Créer un pipeline Gitlab (ie un .gitlab-ci.yml) en 3 stages qui :  
-* dans un stage tests, vérifie la présence du fichier index.html
-* dans un stage build, build l'image Docker et la push dans la registry du repository
-* dans un stage livraison, déploie cette image (uniquement sur la branche main)
+  - dans un stage tests, vérifie la présence du fichier index.html
+  - dans un stage build, build l'image Docker et la push dans la registry du repository
+  - dans un stage livraison, déploie cette image (uniquement sur la branche main)
 
 
 ## Solution

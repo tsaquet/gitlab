@@ -1,0 +1,43 @@
+stages:
+  - tests
+  - build
+  - livraison
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+image: "docker:19.03.12"
+
+.before_script: &before_script
+  # docker login asks for the password to be passed through stdin for security
+  # we use $CI_REGISTRY_PASSWORD here which is a special variable provided by GitLab
+  # https://docs.gitlab.com/ce/ci/variables/predefined_variables.html
+  before_script:
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+
+test-index:
+  stage: tests
+  tags:
+    - conteneur
+  script:
+    - test -s index.html
+
+build-push:
+  stage: build
+  tags:
+    - conteneur
+  <<: *before_script
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+deploy:
+  stage: livraison
+  tags:
+    - conteneur
+  <<: *before_script
+  script:
+    - docker rm -f supdevinci &>/dev/null && echo 'Removed old container'
+    - docker run -d --name supdevinci -p 2222:80 $IMAGE_TAG
+  only:
+    - main

@@ -96,7 +96,7 @@ server {
 
 # Update /etc/hosts
 $ sudo vim /etc/hosts
-127.0.0.1  localhost  gitlab.kr1.dev my.api.video.local gitlab.example.com registry.example.com
+127.0.0.1  localhost  my.api.video.local gitlab.example.com registry.example.com
 
 # Configure the insecure registry - no https - in your docker daemon conf
 $ cat /etc/docker/daemon.json
@@ -136,7 +136,7 @@ Suivre les instructions données dans le repo
 $ docker login registry.example.com:80
 Username: root
 Password:
-WARNING! Your password will be stored unencrypted in /home/kr1/.docker/config.json.
+WARNING! Your password will be stored unencrypted in /home/user/.docker/config.json.
 Configure a credential helper to remove this warning. See
 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 

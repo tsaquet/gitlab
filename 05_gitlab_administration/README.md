@@ -52,7 +52,7 @@ $ docker inspect gitlab
         "Mounts": [
             {
                 "Type": "bind",
-                "Source": "/home/kr1/gitlab/config",
+                "Source": "/srv/gitlab/config",
                 "Destination": "/etc/gitlab",
                 "Mode": "",
                 "RW": true,
@@ -60,7 +60,7 @@ $ docker inspect gitlab
             },
             {
                 "Type": "bind",
-                "Source": "/home/kr1/gitlab/logs",
+                "Source": "/srv/gitlab/logs",
                 "Destination": "/var/log/gitlab",
                 "Mode": "",
                 "RW": true,
@@ -68,7 +68,7 @@ $ docker inspect gitlab
             },
 ...
 
-$ cd /home/kr1/gitlab/logs
+$ cd /srv/gitlab/logs
 
 $ ls
 alertmanager  gitlab-exporter  gitlab-shell      grafana    nginx              postgresql  puma         redis           sidekiq
@@ -392,7 +392,7 @@ $ docker inspect gitlab
         "Mounts": [
             {
                 "Type": "bind",
-                "Source": "/home/kr1/gitlab/config",
+                "Source": "/srv/gitlab/config",
                 "Destination": "/etc/gitlab",
                 "Mode": "",
                 "RW": true,
@@ -400,7 +400,7 @@ $ docker inspect gitlab
             },
             {
                 "Type": "bind",
-                "Source": "/home/kr1/gitlab/logs",
+                "Source": "/srv/gitlab/logs",
                 "Destination": "/var/log/gitlab",
                 "Mode": "",
                 "RW": true,
@@ -408,7 +408,7 @@ $ docker inspect gitlab
             },
 ...
 
-$ cd /home/kr1/gitlab/config && ls -lra
+$ cd /srv/gitlab/config && ls -lra
 ...
 .rw------- 128k root root 11 Dec 18:41 gitlab.rb
 .rw-------  19k root root 11 Dec 18:44 gitlab-secrets.json

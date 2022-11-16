@@ -19,9 +19,9 @@ Retrouvez l'info dans vos TPs Docker
 - Créer un conteneur (CMS Ghost, port par défaut : 2368)
 
 ```bash
-docker run -d --name ghost -e url=http://localhost:3001 -p 3001:2368 ghost
+docker run -d --name ghost -e NODE_ENV=development -p 2368:2368 ghost
 
-# Go to http://localhost:3001 in your browser 
+# Go to http://localhost:2368 in your browser 
 ```
 
 - Créer un Dockerfile qui echo "Hello world" et construire une image

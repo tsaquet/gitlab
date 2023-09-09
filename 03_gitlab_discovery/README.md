@@ -15,4 +15,5 @@
 2. Go to https://gitlab.com/-/profile/keys & follow either https://docs.gitlab.com/ee/ssh/index.html#generate-an-ssh-key-pair or https://docs.gitlab.com/ee/ssh/index.html#see-if-you-have-an-existing-ssh-key-pair
 3. Go to https://gitlab.com/-/profile/account & click on "Enable 2-factor auth". Download "Google authenticator" on your smartphone & scan the QR code.
 4. Go back tohttps://gitlab.com/ & click on "Create a project" (Choose Blank project)
-5. Go to "Issues" > "Board" and start creating issues
+5. Go to "Plan" > "Issues" and start creating issues
+6. Go to "Plan" > "Issue Boards" and start playing with boards, create a new one, find how the labels and boards are related.

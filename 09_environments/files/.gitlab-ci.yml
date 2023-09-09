@@ -1,0 +1,54 @@
+stages:
+  - tests
+  - build
+  - livraison
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+image: "docker"
+
+.before_script: &before_script
+  # docker login asks for the password to be passed through stdin for security
+  # we use $CI_REGISTRY_PASSWORD here which is a special variable provided by GitLab
+  # https://docs.gitlab.com/ce/ci/variables/predefined_variables.html
+  before_script:
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+
+test-index:
+  stage: tests
+  tags:
+    - conteneur
+  script:
+    - test -s index.html
+
+environment-specific-test:
+  stage: tests
+  image: alpine
+  tags: 
+    - conteneur
+  script:
+    - echo $USER_DEFINED_VAR
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+
+
+build-push:
+  stage: build
+  tags:
+    - conteneur
+  <<: *before_script
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+deploy:
+  stage: livraison
+  tags:
+    - conteneur
+  <<: *before_script
+  script:
+    - docker rm -f nom_conteneur_prod &>/dev/null && echo 'Removed old container'
+    - docker run -d --name nom_conteneur_prod -p 8080:80 $IMAGE_TAG
+  only:
+    - main

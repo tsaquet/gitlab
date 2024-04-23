@@ -1,0 +1,65 @@
+stages:
+  - build
+  - upload
+  - release
+ 
+.windows_job:
+  tags:
+    - saas-windows-medium-amd64
+  rules:
+  - if: $CI_COMMIT_TAG  
+
+.linux_job:
+  tags:
+    - saas-linux-small-amd64
+  rules:
+  - if: $CI_COMMIT_TAG  
+
+variables:
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/go-example/${CI_COMMIT_TAG}"
+
+build_linux:
+  extends:
+    - .linux_job
+  stage: build
+  image: golang:latest
+  script:
+    - go build -o go-example-linuxamd64-${CI_COMMIT_TAG}
+  artifacts:
+    paths:
+      - go-example-linuxamd64-${CI_COMMIT_TAG}
+
+build_windows:
+  extends:
+    - .windows_job
+  stage: build
+  image: golang:latest
+  script:
+    - go build -o go-example-windowsamd64-${CI_COMMIT_TAG}.exe
+  artifacts:
+    paths:
+      - go-example-windowsamd64-${CI_COMMIT_TAG}.exe
+
+upload:
+  extends:
+    - .linux_job
+  stage: upload
+  dependencies:
+    - build_linux
+    - build_windows
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file go-example-linuxamd64-${CI_COMMIT_TAG} "${PACKAGE_REGISTRY_URL}/go-example-linuxamd64-${CI_COMMIT_TAG}"
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file go-example-windowsamd64-${CI_COMMIT_TAG}.exe "${PACKAGE_REGISTRY_URL}/go-example-windowsamd64-${CI_COMMIT_TAG}.exe"
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"go-example-linuxamd64-${CI_COMMIT_TAG}\",\"url\":\"${PACKAGE_REGISTRY_URL}/go-example-linuxamd64-${CI_COMMIT_TAG}\"}" \
+        --assets-link "{\"name\":\"go-example-windowsamd64-${CI_COMMIT_TAG}.exe\",\"url\":\"${PACKAGE_REGISTRY_URL}/go-example-windowsamd64-${CI_COMMIT_TAG}.exe\"}"

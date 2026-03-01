@@ -6,7 +6,7 @@
 - Créer un conteneur (CMS Ghost, port par défaut : 2368) 
 - Créer un Dockerfile dont la commande est un `echo "Hello world"`, construire l'image & la lancer
 - Activer le Registry Docker dans Gitlab via docker
-- Activer le Registry Docker dans Gitlab via docker-compose
+- Activer le Registry Docker dans Gitlab via docker compose
 - Push votre dockerfile dans un nouveau projet gitlab
 - Push votre image Docker dans le registry de votre projet Gitlab (activer le mode “insecure”)
 
@@ -105,7 +105,7 @@ $ cat /etc/docker/daemon.json
 }
 ```
 
-- Activer le Registry Docker dans Gitlab via docker-compose
+- Activer le Registry Docker dans Gitlab via docker compose
 
 ```bash 
 $ cd files/
@@ -118,7 +118,7 @@ services:
         external_url 'http://gitlab.example.com'
         registry_external_url 'http://registry.example.com'
 ...
-$ docker-compose up -d --force-recreate
+$ docker compose up -d --force-recreate
 ```
 
 - Push votre dockerfile dans un nouveau projet gitlab

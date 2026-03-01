@@ -4,7 +4,7 @@
 
 - Installer Docker
 - Installer & démarrer Gitlab via docker
-- Installer & démarrer Gitlab via docker-compose
+- Installer & démarrer Gitlab via docker compose
 - Créer le compte d'administration
 
 Bonus: docker inspect gitlab => See CMD ie /assets/wrapper, find & read the shell script to understand how Gitlab Omnibus is launched
@@ -30,7 +30,7 @@ https://docs.gitlab.com/ee/install/docker.html
 export GITLAB_HOME=$HOME/gitlab
 docker run --detach \
   --hostname gitlab.example.com \
-  --publish 443:443 --publish 80:80 --publish 22:22 \
+  --publish 443:443 --publish 80:80 --publish 2222:22 \
   --name gitlab \
   --restart always \
   --volume $GITLAB_HOME/config:/etc/gitlab \
@@ -52,11 +52,11 @@ Password: the password you just found
 # Change the password
 ```
 
-- Installer & démarrer Gitlab via docker-compose
+- Installer & démarrer Gitlab via docker compose
 
 ```bash
 $ cd files
-$ docker-compose up -d
+$ docker compose up -d
 
 # Get the root pwd
 docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password

@@ -146,12 +146,12 @@ Every 2.0s: docker ps                                                           
 
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS
                                                NAMES
-1a1a928c7c42   gitlab/gitlab-ee:latest         "/assets/wrapper"        22 minutes ago   Up 22 minutes (healthy)   0.0.0.0:22->22/t
+1a1a928c7c42   gitlab/gitlab-ce:latest         "/assets/wrapper"        22 minutes ago   Up 22 minutes (healthy)   0.0.0.0:22->22/t
 cp, 0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp   gitlab
 ...
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                      PORTS
                       NAMES
-1a1a928c7c42   gitlab/gitlab-ee:latest         "/assets/wrapper"        32 minutes ago   Up 32 minutes (unhealthy)   0.0.0.0:22->22/tcp, 0.0.0.0:80->80/tcp, 0
+1a1a928c7c42   gitlab/gitlab-ce:latest         "/assets/wrapper"        32 minutes ago   Up 32 minutes (unhealthy)   0.0.0.0:22->22/tcp, 0.0.0.0:80->80/tcp, 0
 .0.0.0:443->443/tcp   gitlab
 
 $ docker inspect --format "{{json .State.Health }}" gitlab | jq

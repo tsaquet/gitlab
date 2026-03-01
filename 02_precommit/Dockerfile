@@ -1,5 +1,5 @@
 # 1. Install python & pip
-FROM python:3.7
+FROM python:3.12
 
 # 2. Install pre-commit https://pre-commit.com/
 RUN apt-get update && apt-get install -y \

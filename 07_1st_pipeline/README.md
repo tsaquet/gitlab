@@ -10,7 +10,7 @@ echo “Mon second job !” dans un second job
 - Créer un second runner utilisant l’executor “Docker” 
 - Lui donner le tag “conteneur” 
 - Ajouter dans le .gitlab-ci.yml  
-Un troisième job qui est dépendant des deux premiers et qui s'exécute uniquement sur Master  
+Un troisième job qui est dépendant des deux premiers et qui s'exécute uniquement sur main  
 echo “Mon job final !”
 
 The image can take a long long time to pull.  
@@ -34,7 +34,7 @@ $ cd files
 $ cat docker-compose.yml
 ...
   gitlab-runner-shell:
-    image: gitlab/gitlab-runner:alpine
+    image: gitlab/gitlab-runner:ubuntu
     restart: unless-stopped
     container_name: shell-runner
     depends_on:
@@ -45,7 +45,7 @@ $ cat docker-compose.yml
     networks:
       - gitlab
 ...
-$ docker-compose up -d
+$ docker compose up -d
 $ docker exec -it shell-runner bash
 bash-5.0# gitlab-runner register
 Runtime platform                                    arch=amd64 os=linux pid=29 revision=e91107dd version=14.5.2
@@ -99,7 +99,7 @@ $ cd files
 $ cat docker-compose.yml
 ...
   gitlab-runner-docker:
-    image: gitlab/gitlab-runner:alpine
+    image: gitlab/gitlab-runner:ubuntu
     restart: unless-stopped
     container_name: docker-runner
     depends_on:
@@ -109,7 +109,7 @@ $ cat docker-compose.yml
       - '/var/run/docker.sock:/var/run/docker.sock'
     networks:
       - gitlab
-$ docker-compose up -d 
+$ docker compose up -d 
 $ docker exec -it docker-runner bash
 bash-5.0# gitlab-runner register
 Runtime platform                                    arch=amd64 os=linux pid=26 revision=e91107dd version=14.5.2

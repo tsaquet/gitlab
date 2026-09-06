@@ -54,7 +54,7 @@ Hello world
 
 - Activer le Registry Docker dans Gitlab via docker
 
-https://docs.gitlab.com/ee/administration/packages/container_registry.html
+https://docs.gitlab.com/administration/packages/container_registry/
 
 
 ```bash
@@ -128,7 +128,18 @@ $ docker compose up -d --force-recreate
 
 - Push votre image Docker dans le registry de votre projet Gitlab (activer le mode “insecure”)
 
-Suivre les instructions données dans le repo
+Suivre les instructions données dans le repo (onglet Deploy > Container Registry)
+
+Sur **gitlab.com** (cas de la formation GLN), pas de registry à activer ni de mode insecure : la registry est `registry.gitlab.com`.
+Le `docker login` refuse le mot de passe du compte si la 2FA est active, il faut un jeton d'accès avec le scope `write_registry` (voir l'exercice 11) :
+
+```bash
+$ docker login registry.gitlab.com -u <username> -p glpat-xxxxxxxxxxxxxxxxxxxx
+$ docker build -t registry.gitlab.com/<namespace>/<project> .
+$ docker push registry.gitlab.com/<namespace>/<project>
+```
+
+Sur une instance locale :
 
 ![Registy](./files/01.png)
 

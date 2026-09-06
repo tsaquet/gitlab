@@ -22,6 +22,16 @@ Ce dépôt contient des exercices progressifs pour apprendre Git, GitLab et le C
 | 08 | [08_first_cicd](./08_first_cicd) | Première chaîne CI/CD complète |
 | 09 | [09_environments](./09_environments) | Variables d'environnement et branches |
 | 10 | [10_release](./10_release) | Gestion des releases (build multi-plateforme) |
+| 11 | [11_access_tokens](./11_access_tokens) | Jetons d'accès et jetons à permissions fines |
+| 12 | [12_cicd_components](./12_cicd_components) | Composants CI/CD et CI/CD Catalog |
+
+Ordre suivi dans la formation Gitlab CI/CD (GLN) : 01, 03, 11, 06, 07, 08, 09, 10, 12.
+Les exercices 04 et 05 (installation et administration) sont utilisés dans d'autres formations.
+
+## Notes de version
+
+- Depuis Gitlab 18.0, les *registration tokens* n'existent plus : un runner se crée d'abord dans l'interface, qui fournit un jeton `glrt-…` à passer à `gitlab-runner register --token`. Les exercices 07 et 08 ont été mis à jour en conséquence.
+- Les runners hébergés de gitlab.com (exercice 10) nécessitent la vérification d'identité du compte (carte bancaire, sans débit).
 
 ## Licence
 

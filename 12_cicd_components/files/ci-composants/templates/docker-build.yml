@@ -1,0 +1,25 @@
+spec:
+  inputs:
+    stage:
+      default: build
+      description: "Stage dans lequel placer le job"
+    image_name:
+      default: $CI_REGISTRY_IMAGE
+      description: "Nom complet de l'image, registry incluse"
+    tag:
+      default: $CI_COMMIT_REF_SLUG
+      description: "Tag de l'image"
+    dockerfile:
+      default: Dockerfile
+      description: "Chemin du Dockerfile"
+---
+build-docker:
+  stage: $[[ inputs.stage ]]
+  image: docker:cli
+  tags:
+    - conteneur
+  before_script:
+    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker build -f "$[[ inputs.dockerfile ]]" -t "$[[ inputs.image_name ]]:$[[ inputs.tag ]]" .
+    - docker push "$[[ inputs.image_name ]]:$[[ inputs.tag ]]"

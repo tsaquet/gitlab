@@ -3,6 +3,7 @@
 ## To Do
 
 - Ajouter un message général pour avertir d’un maintenance 
+- Changer le mot de passe du compte administrateur (en CLI)
 - Créer 2 utilisateurs (un admin, un standard) 
 - Vérifiez le bon fonctionnement du service Gitlab
 - Consultez les logs de Nginx 
@@ -18,6 +19,17 @@
 
 ![Message for maintenance](./files/01.png)
 
+(Admin > Messages > Broadcast messages)
+
+- Changer le mot de passe du compte administrateur (en CLI)
+
+```bash
+$ docker exec -it gitlab gitlab-rake "gitlab:password:reset[root]"
+Enter password:
+Confirm password:
+Password successfully updated for user with username root.
+```
+
 - Créer 2 utilisateurs (un admin, un standard)
 
 ![Users](./files/02.png)
@@ -27,6 +39,8 @@
 ```bash
 $ docker exec -it gitlab bash
 
+# Note: this output comes from Gitlab 14. Since 16.0, grafana is gone from the list
+# (the bundled Grafana was removed), the rest is unchanged.
 root@gitlab:/assets# gitlab-ctl status
 run: alertmanager: (pid 1482) 1193s; run: log: (pid 1248) 1237s
 run: gitaly: (pid 1493) 1192s; run: log: (pid 534) 1323s
@@ -194,15 +208,19 @@ ok: run: sshd: (pid 2712) 1s
 
 - Exécutez 2 appels  APIs 
 
-https://docs.gitlab.com/ee/api/api_resources.html
+https://docs.gitlab.com/api/api_resources/
 
-// Generate a token
+// Generate a token: User settings > Access tokens > Add new token, scope `api`.
+// An expiry date is now mandatory (default 30 days) and tokens start with `glpat-`.
+// See exercise 11 for fine-grained tokens.
 
 ![Token](./files/03.png)
 
 ```bash
+$ export TOKEN=glpat-xxxxxxxxxxxxxxxxxxxx
+
 # Get groups
-$ curl -s --header "PRIVATE-TOKEN: 6v-Mt9W9g1xjXZqKUoje" "http://gitlab.example.com/api/v4/groups"
+$ curl -s --header "PRIVATE-TOKEN: $TOKEN" "http://gitlab.example.com/api/v4/groups"
 [
     {
         "id": 2,
@@ -233,7 +251,7 @@ $ curl -s --header "PRIVATE-TOKEN: 6v-Mt9W9g1xjXZqKUoje" "http://gitlab.example.
 ]
 
 # Create a new group
-$ curl -s --request POST --header "PRIVATE-TOKEN: 6v-Mt9W9g1xjXZqKUoje" --header "Content-Type: application/json" \
+$ curl -s --request POST --header "PRIVATE-TOKEN: $TOKEN" --header "Content-Type: application/json" \
      --data '{"path": "my-group", "name": "My group"}' "http://gitlab.example.com/api/v4/groups"
 {
     "id": 4,
@@ -276,7 +294,7 @@ $ curl -s --request POST --header "PRIVATE-TOKEN: 6v-Mt9W9g1xjXZqKUoje" --header
 }
 
 # Get groups
-$ curl -s --header "PRIVATE-TOKEN: 6v-Mt9W9g1xjXZqKUoje" "http://gitlab.example.com/api/v4/groups"
+$ curl -s --header "PRIVATE-TOKEN: $TOKEN" "http://gitlab.example.com/api/v4/groups"
 [
     {
         "id": 2,
@@ -335,7 +353,7 @@ $ curl -s --header "PRIVATE-TOKEN: 6v-Mt9W9g1xjXZqKUoje" "http://gitlab.example.
 
 - Créer un backup de Gitlab (et le restaurer)
 
-https://docs.gitlab.com/ee/raketasks/backup_restore.html
+https://docs.gitlab.com/administration/backup_restore/
 
 ```bash
 $ docker exec -it gitlab bash
@@ -419,8 +437,11 @@ $ sudo cp gitlab-secrets.json gitlab.rb ~/backups
 $ ls ~/backups
 gitlab-secrets.json  gitlab.rb
 
-# Restore the backup
-root@gitlab:/var/opt/gitlab/backups# GITLAB_ASSUME_YES=1 gitlab-backup restore
+# Restore the backup: stop the processes connected to the database first
+root@gitlab:/# gitlab-ctl stop puma
+root@gitlab:/# gitlab-ctl stop sidekiq
+root@gitlab:/# cd /var/opt/gitlab/backups/
+root@gitlab:/var/opt/gitlab/backups# GITLAB_ASSUME_YES=1 gitlab-backup restore BACKUP=1639247116_2021_12_11_14.5.2-ee
 Unpacking backup ... done
 Be sure to stop Puma, Sidekiq, and any other process that
 connects to the database before proceeding. For Omnibus
@@ -452,4 +473,8 @@ Deleting backups/tmp ... done
 Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data 
 and are not included in this backup. You will need to restore these files manually.
 Restore task is done.
+
+# Then restart everything and check
+root@gitlab:/# gitlab-ctl restart
+root@gitlab:/# gitlab-rake gitlab:check SANITIZE=true
 ```

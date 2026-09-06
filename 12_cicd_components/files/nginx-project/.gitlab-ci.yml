@@ -1,0 +1,35 @@
+# Pipeline du projet nginx (TP 08) consommant le composant docker-build.
+stages:
+  - tests
+  - build
+  - livraison
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+include:
+  # Remplacer <namespace> par le vôtre. @1 suivrait la dernière 1.x.x, @~latest la dernière release.
+  - component: gitlab.com/<namespace>/ci-composants/docker-build@1.0.0
+    inputs:
+      stage: build
+
+test-index:
+  stage: tests
+  image: alpine
+  tags:
+    - conteneur
+  script:
+    - test -s index.html
+
+deploy:
+  stage: livraison
+  image: docker:cli
+  tags:
+    - conteneur
+  before_script:
+    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker rm -f nom_conteneur_prod &>/dev/null && echo 'Removed old container'
+    - docker run -d --name nom_conteneur_prod -p 8080:80 $IMAGE_TAG
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

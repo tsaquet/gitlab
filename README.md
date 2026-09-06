@@ -25,7 +25,7 @@ Ce dépôt contient des exercices progressifs pour apprendre Git, GitLab et le C
 | 11 | [11_access_tokens](./11_access_tokens) | Jetons d'accès et jetons à permissions fines |
 | 12 | [12_cicd_components](./12_cicd_components) | Composants CI/CD et CI/CD Catalog |
 
-Ordre suivi dans la formation Gitlab CI/CD (GLN) : 01, 03, 11, 06, 07, 08, 09, 10, 12.
+Ordre conseillé pour une formation Gitlab CI/CD : 01, 03, 11, 06, 07, 08, 09, 10, 12.
 Les exercices 04 et 05 (installation et administration) sont utilisés dans d'autres formations.
 
 ## Notes de version

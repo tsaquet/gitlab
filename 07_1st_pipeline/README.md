@@ -87,7 +87,7 @@ root@e44251207bbd:/# gitlab-runner register --non-interactive \
 root@e44251207bbd:/# cat /etc/gitlab-runner/config.toml
 ```
 
-Sur gitlab.com (formation GLN), l'URL est `https://gitlab.com` et le runner tourne sur votre poste, par exemple :
+Sur gitlab.com, l'URL est `https://gitlab.com` et le runner tourne sur votre poste, par exemple :
 
 ```bash
 docker run -d --name shell-runner --restart unless-stopped \

@@ -130,7 +130,7 @@ $ docker compose up -d --force-recreate
 
 Suivre les instructions données dans le repo (onglet Deploy > Container Registry)
 
-Sur **gitlab.com** (cas de la formation GLN), pas de registry à activer ni de mode insecure : la registry est `registry.gitlab.com`.
+Sur **gitlab.com**, pas de registry à activer ni de mode insecure : la registry est `registry.gitlab.com`.
 Le `docker login` refuse le mot de passe du compte si la 2FA est active, il faut un jeton d'accès avec le scope `write_registry` (voir l'exercice 11) :
 
 ```bash

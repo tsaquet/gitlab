@@ -1,0 +1,23 @@
+# Pipeline du projet de composants : teste le composant sur chaque commit, publie une release sur tag.
+stages:
+  - build
+  - release
+
+include:
+  # Toujours tester la version du commit courant
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/docker-build@$CI_COMMIT_SHA
+    inputs:
+      image_name: $CI_REGISTRY_IMAGE/test
+
+create-release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags:
+    - conteneur
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Release $CI_COMMIT_TAG"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: "Version $CI_COMMIT_TAG du composant docker-build"

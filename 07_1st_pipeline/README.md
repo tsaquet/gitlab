@@ -2,7 +2,8 @@
 
 ## To Do
 
-- Installer un runner utilisant l’executor “shell” 
+- Créer un runner dans l'interface du projet (Settings > CI/CD > Runners) et récupérer son jeton `glrt-…`
+- Installer un runner utilisant l’executor “shell” et l'enregistrer avec ce jeton
 - Donner un tag “cli” au runner 
 - Créer un .gitlab-ci.yml qui va juste faire un :  
 echo “Mon premier job !” dans un premier job  
@@ -22,12 +23,25 @@ docker load < gitlab-runner-ubuntu_image.tar.gz
 
 ## Solution
 
-- Installer un runner utilisant l’executor “shell” & donner un tag "cli" au runner
+- Créer le runner dans l'interface
 
-https://docs.gitlab.com/runner/install/index.html  
+Depuis Gitlab 16.0 un runner se crée d'abord dans l'interface, et depuis 18.0 c'est la seule façon de faire
+(les *registration tokens* partagés ont été supprimés).
+
+https://docs.gitlab.com/runner/install/  
 https://docs.gitlab.com/runner/register/  
+https://docs.gitlab.com/ci/runners/runners_scope/#create-a-project-runner-with-a-runner-authentication-token
 
-![Runner registration token](./files/01.png)
+Dans le projet : **Settings > CI/CD > Runners > New project runner**
+
+- Tags : `cli`
+- Cocher "Run untagged jobs" si vous voulez qu'il prenne aussi les jobs sans tag
+- **Create runner** : Gitlab affiche le jeton d'authentification `glrt-…`, il n'est visible qu'une fois
+
+Le tag et la description sont désormais définis dans l'interface, `gitlab-runner register` ne les demande plus.
+Un jeton = un runner : pour le second runner (Docker) il faudra en créer un autre.
+
+- Installer un runner utilisant l’executor “shell”
 
 ```bash
 $ cd files
@@ -47,23 +61,41 @@ $ cat docker-compose.yml
 ...
 $ docker compose up -d
 $ docker exec -it shell-runner bash
-bash-5.0# gitlab-runner register
-Runtime platform                                    arch=amd64 os=linux pid=29 revision=e91107dd version=14.5.2
-Running in system-mode.                            
-                                                   
+root@e44251207bbd:/# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=29 revision=xxxxxxxx version=18.x.x
+Running in system-mode.
+
 Enter the GitLab instance URL (for example, https://gitlab.com/):
 http://gitlab.example.com
 Enter the registration token:
-MsrseSLaPzX5zWJNXViq
-Enter a description for the runner:
-[e44251207bbd]: shell-runner     
-Enter tags for the runner (comma-separated):
-cli
-Registering runner... succeeded                     runner=MsrseSLa
-Enter an executor: custom, shell, ssh, virtualbox, kubernetes, docker, docker-ssh, parallels, docker+machine, docker-ssh+machine:
+glrt-xxxxxxxxxxxxxxxxxxxx
+Verifying runner... is valid                        runner=xxxxxxxx
+Enter a name for the runner. This is stored only in the local config.toml file:
+[e44251207bbd]: shell-runner
+Enter an executor: custom, shell, ssh, virtualbox, kubernetes, docker, docker-windows, docker+machine, instance, parallels:
 shell
-Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+
+# Same thing, non interactive:
+root@e44251207bbd:/# gitlab-runner register --non-interactive \
+    --url http://gitlab.example.com \
+    --token glrt-xxxxxxxxxxxxxxxxxxxx \
+    --executor shell \
+    --name shell-runner
+
+# The token ends up in /etc/gitlab-runner/config.toml
+root@e44251207bbd:/# cat /etc/gitlab-runner/config.toml
 ```
+
+Sur gitlab.com, l'URL est `https://gitlab.com` et le runner tourne sur votre poste, par exemple :
+
+```bash
+docker run -d --name shell-runner --restart unless-stopped \
+  -v gitlab-runner-shell:/etc/gitlab-runner \
+  gitlab/gitlab-runner:ubuntu
+docker exec -it shell-runner gitlab-runner register --non-interactive \
+  --url https://gitlab.com --token glrt-xxxxxxxxxxxxxxxxxxxx --executor shell --name shell-runner
+```"
 
 ![Runner shell up](./files/02.png)
 
@@ -110,26 +142,21 @@ $ cat docker-compose.yml
     networks:
       - gitlab
 $ docker compose up -d 
+
+# Create a second runner in the UI with the tag "conteneur", get its glrt- token, then:
 $ docker exec -it docker-runner bash
-bash-5.0# gitlab-runner register
-Runtime platform                                    arch=amd64 os=linux pid=26 revision=e91107dd version=14.5.2
-Running in system-mode.                            
-                                                   
-Enter the GitLab instance URL (for example, https://gitlab.com/):
-http://gitlab.example.com
-Enter the registration token:
-MsrseSLaPzX5zWJNXViq
-Enter a description for the runner:
-[4e09a1612ced]: conteneur
-Enter tags for the runner (comma-separated):
-conteneur
-Registering runner... succeeded                     runner=MsrseSLa
-Enter an executor: ssh, virtualbox, shell, docker+machine, docker-ssh+machine, kubernetes, custom, docker, docker-ssh, parallels:
-docker
-Enter the default Docker image (for example, ruby:2.6):
-alpine
-Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
-```
+root@4e09a1612ced:/# gitlab-runner register --non-interactive \
+    --url http://gitlab.example.com \
+    --token glrt-yyyyyyyyyyyyyyyyyyyy \
+    --executor docker \
+    --docker-image alpine \
+    --name docker-runner
+Runtime platform                                    arch=amd64 os=linux pid=26 revision=xxxxxxxx version=18.x.x
+Running in system-mode.
+
+Verifying runner... is valid                        runner=yyyyyyyy
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+```"
 
 The job fails! Why?
 
@@ -167,3 +194,11 @@ root@23fbc2cdd8f0:/# vim /etc/gitlab-runner/config.toml
 
 # Relaunch the job
 ```
+
+The same thing can be done at registration time with `--docker-network-mode files_gitlab`.
+
+- Le troisième job, dépendant des deux premiers et uniquement sur `main`
+
+Voir [.gitlab-ci.yml.2](./files/.gitlab-ci.yml.2) : deux stages (le second attend la fin du premier),
+et une règle `rules: - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH` sur le job final.
+`only` / `except` sont dépréciés au profit de `rules`.

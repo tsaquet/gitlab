@@ -9,10 +9,12 @@
 ## Solution
 
 - Dans votre projet allez dans "Settings" > "CI/CD" et étendez la partie correspondant aux variables.
-- Définissez trois fois la même variable, une fois pour les deux environnements **main** et **develop** et une troisième pour tous les autres environnements
+- Définissez trois fois la même variable `USER_DEFINED_VAR`, une fois pour les deux environnements **main** et **develop** et une troisième pour tous les autres environnements (scope `*`)
 
 ![Variables du projet](./images/user_defined_variables.png)
 
 - Assurez-vous qu'il y a bien une branche **main** et une branche **develop** dans votre projet
 - Utilisez le fichier `.gitlab-ci.yml` fourni dans le dossier `files`
 - Observez que le résultat de l'affichage de la variable est différent en fonction des branches.
+- La variable prédéfinie est `$CI_COMMIT_REF_SLUG` (le nom de la branche, nettoyé pour être utilisable dans une URL ou un nom d'environnement).
+- Les environnements créés apparaissent dans **Operate > Environments**.

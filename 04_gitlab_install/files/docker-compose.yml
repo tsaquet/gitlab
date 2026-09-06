@@ -11,6 +11,7 @@ services:
       - '80:80'
       - '443:443'
       - '2222:22'
+    shm_size: '256m'
     volumes:
       - '${GITLAB_HOME}/config:/etc/gitlab'
       - '${GITLAB_HOME}/logs:/var/log/gitlab'

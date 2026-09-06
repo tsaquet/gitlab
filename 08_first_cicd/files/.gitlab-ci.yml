@@ -6,7 +6,7 @@ stages:
 variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
-image: "docker"
+image: docker:cli
 
 .before_script: &before_script
   # docker login asks for the password to be passed through stdin for security
@@ -39,5 +39,5 @@ deploy:
   script:
     - docker rm -f nom_conteneur_prod &>/dev/null && echo 'Removed old container'
     - docker run -d --name nom_conteneur_prod -p 8080:80 $IMAGE_TAG
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
